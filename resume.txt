@@ -1,0 +1,266 @@
+%sum of two numbers% 
+sum(X,Y):- 
+    S is X+Y, 
+    write(S).
+------------------------------------------------------------------------------------------------------------------ 
+ 
+ 
+%find Maximum of two Numbers. 
+ 
+max(X,Y):- 
+    ( 
+     X=Y -> 
+     write('both are equal') 
+     ; 
+     X>Y -> 
+     ( 
+        Z is X, 
+        write(Z) 
+     ) 
+     ; 
+     ( 
+     Z is Y, 
+     write(Z) 
+     ) 
+    ). 
+ ------------------------------------------------------------------------------------------------------------------ 
+ 
+ 
+ 
+ 
+ 
+ 
+/*Write a Program in Prolog that take number N from the user and count 
+from N to 10.*/ 
+ 
+num(N):- 
+    print_one_to_ten(N,10). 
+ 
+print_one_to_ten(X,Y):- 
+    X<(Y+1), 
+    write(X),nl, 
+    NewX is X+1, 
+    print_one_to_ten(NewX,Y). 
+ ------------------------------------------------------------------------------------------------------------------ 
+ 
+ 
+/* Write a Program in prolog that take number N from the user and count from N to 1.*/ 
+ 
+loop(N) :- 
+    N>0, 
+    write(N), nl, 
+    S is N-1, 
+    loop(S). 
+ 
+ ------------------------------------------------------------------------------------------------------------------ 
+ 
+/*write a Prolog in Prolog that take number N from the user Calculate factorial of number. */ 
+fact(0,1). 
+fact(N,F):- 
+( 
+    %The below is for +ve Factorial. 
+    N>0 -> 
+    ( 
+          Nl is N-1, 
+          fact(Nl,Fl), 
+          F is N*Fl 
+     ) 
+    ; 
+    %The below is for -ve Factorial. 
+    N<0 -> 
+    ( 
+          Nl is N+1, 
+          fact(Nl,Fl), 
+          F is N*Fl 
+      ) 
+). 
+ ------------------------------------------------------------------------------------------------------------------ 
+ 
+ 
+/*Write a Program in Prolog that take number N from the user calculate square of number from 
+N to 20 and display it .*/ 
+ 
+square(N):- 
+    N<21, 
+    R is N*N, 
+    write(R),nl, 
+    S is N+1, 
+    square(S).
+------------------------------------------------------------------------------------------------------------------ ---------------------------------------------------------------------------------------------------------
+PYTHON 
+#N*N QUEEN PROBLEM
+def solve_n_queens(n):
+    board = [[0] * n for _ in range(n)]
+    result = []
+
+    def is_safe(board, row, col):
+        for i in range(row):
+            if board[i][col] == 1:
+                return False
+            if col - (row - i) >= 0 and board[i][col - (row - i)] == 1:
+                return False
+            if col + (row - i) < n and board[i][col + (row - i)] == 1:
+                return False
+        return True
+
+    def solve(board, row):
+        if row == n:
+            result.append(["".join("Q" if col == 1 else "." for col in row) for row in board])
+            return
+        for col in range(n):
+            if is_safe(board, row, col):
+                board[row][col] = 1
+                solve(board, row + 1)
+                board[row][col] = 0
+
+    solve(board, 0)
+    return result
+
+n = 8
+solutions = solve_n_queens(n)
+for solution in solutions:
+    for row in solution:
+        print(row)
+    print()
+ ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+def dfs_path(graph, start, goal, path=[]):
+    path.append(start)
+    if start == goal:
+        return path
+    for neighbor in graph.get(start, []):
+        if neighbor not in path:
+            new_path = dfs_path(graph, neighbor, goal, path.copy())
+            if new_path:
+                return new_path
+    return None
+
+graph = {
+    'A': ['B', 'C'],
+    'B': ['A', 'D', 'E'],
+    'C': ['A', 'F'],
+    'D': ['B'],
+    'E': ['B', 'F'],
+    'F': ['C', 'E']
+}
+
+start_node = 'A'
+goal_node = 'F'
+
+path = dfs_path(graph, start_node, goal_node)
+
+if path:
+    print("Path found:", " -> ".join(path))
+else:
+    print("No path found.")
+ -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+#BEST FIRST SEARCH
+
+import heapq
+
+class Node:
+    def __init__(self, name, heuristic, parent=None):
+        self.name = name
+        self.heuristic = heuristic
+        self.parent = parent
+
+    def __lt__(self, other):
+        return self.heuristic < other.heuristic
+
+def best_first_search(start, goal, graph, heuristic_values):
+    open_list = []
+    heapq.heappush(open_list, Node(start, heuristic_values[start]))
+    visited = set()
+
+    while open_list:
+        current_node = heapq.heappop(open_list)
+        
+        if current_node.name == goal:
+            path = []
+            while current_node:
+                path.append(current_node.name)
+                current_node = current_node.parent
+            return path[::-1]
+        
+        if current_node.name in visited:
+            continue
+        
+        visited.add(current_node.name)
+
+        for neighbor in graph.get(current_node.name, []):
+            if neighbor not in visited:
+                heapq.heappush(open_list, Node(neighbor, heuristic_values[neighbor], current_node))
+
+    return None
+
+graph = {
+    'A': ['B', 'C'],
+    'B': ['A', 'D', 'E'],
+    'C': ['A', 'F'],
+    'D': ['B'],
+    'E': ['B', 'F'],
+    'F': ['C', 'E']
+}
+
+heuristic_values = {
+    'A': 6,
+    'B': 2,
+    'C': 5,
+    'D': 3,
+    'E': 4,
+    'F': 1
+}
+
+start_node = 'A'
+goal_node = 'F'
+path = best_first_search(start_node, goal_node, graph, heuristic_values)
+
+if path:
+    print("Path found:", " -> ".join(path))
+else:
+    print("No path found.")
+
+ ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+#BREADTH FIRST SEARCH
+
+from collections import deque
+
+def bfs_shortest_path(graph, start, goal):
+    queue = deque([[start]])
+    visited = set()
+
+    while queue:
+        path = queue.popleft()
+        node = path[-1]
+
+        if node == goal:
+            return path
+        
+        if node not in visited:
+            visited.add(node)
+            
+            for neighbor in graph.get(node, []):
+                new_path = list(path)
+                new_path.append(neighbor)
+                queue.append(new_path)
+    
+    return None
+
+graph = {
+    'A': ['B', 'C'],
+    'B': ['A', 'D', 'E'],
+    'C': ['A', 'F'],
+    'D': ['B'],
+    'E': ['B', 'F'],
+    'F': ['C', 'E']
+}
+
+start_node = 'A'
+goal_node = 'F'
+
+path = bfs_shortest_path(graph, start_node, goal_node)
+
+if path:
+    print("Shortest path found:", " -> ".join(path))
+else:
+    print("No path found.") 
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
